@@ -342,6 +342,10 @@ class LibraryCallKit : public GraphKit {
 
   bool inline_continuation_do_yield();
 
+  // KDY
+  bool inline_k_inner_product(vmIntrinsics::ID id);
+  // KDY
+
   // Vector API support
   bool inline_vector_nary_operation(int n);
   bool inline_vector_frombits_coerced();

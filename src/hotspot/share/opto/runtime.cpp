@@ -821,6 +821,22 @@ const TypeFunc* OptoRuntime::fast_arraycopy_Type() {
   return make_arraycopy_Type(ac_fast);
 }
 
+const TypeFunc* OptoRuntime::kdy_innerProduct_Type() {
+  // Input
+  const Type** fields = TypeTuple::fields(3);
+  fields[TypeFunc::Parms+0] = TypePtr::NOTNULL;
+  fields[TypeFunc::Parms+1] = TypePtr::NOTNULL;
+  fields[TypeFunc::Parms+2] = Type::FLOAT;
+  const TypeTuple *domain = TypeTuple::make(TypeFunc::Parms+3, fields);
+
+  // Output
+  fields = TypeTuple::fields(1);
+  fields[TypeFunc::Parms+0] = Type::FLOAT;
+  const TypeTuple *range = TypeTuple::make(TypeFunc::Parms+0, fields);
+
+  return TypeFunc::make(domain, range);
+}
+
 const TypeFunc* OptoRuntime::checkcast_arraycopy_Type() {
   // An extension of fast_arraycopy_Type which adds type checking.
   return make_arraycopy_Type(ac_checkcast);

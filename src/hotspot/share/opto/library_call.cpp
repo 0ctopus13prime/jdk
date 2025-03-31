@@ -753,6 +753,9 @@ bool LibraryCallKit::try_to_inline(int predicate) {
   case vmIntrinsics::_blackhole:
     return inline_blackhole();
 
+    case vmIntrinsics::_k_inner_product:
+      return inline_k_inner_product(intrinsic_id());
+
   default:
     // If you get here, it may be that someone has added a new intrinsic
     // to the list in vmIntrinsics.hpp without implementing it here.
@@ -765,6 +768,33 @@ bool LibraryCallKit::try_to_inline(int predicate) {
     return false;
   }
 }
+
+// KDY
+bool LibraryCallKit::inline_k_inner_product(vmIntrinsics::ID id) {
+  Node* vec1 = argument(0);
+  Node* vec2 = argument(0);
+
+  Node* len1 = load_array_length(vec1);
+
+  auto stubAddr = StubRoutines::kdy_innerProduct();
+  const auto stubName = "kdy_innerProduct";
+
+  Node* call = make_runtime_call(RC_LEAF,
+                                 OptoRuntime::kdy_innerProduct_Type(),
+                                 stubAddr,
+                                 stubName,
+                                 TypePtr::BOTTOM,
+                                 vec1,
+                                 vec2,
+                                 len1);
+
+  Node* result = _gvn.transform(new ProjNode(call, TypeFunc::Parms));
+  set_result(result);
+
+  return true;
+}
+// KDY
+
 
 Node* LibraryCallKit::try_to_predicate(int predicate) {
   if (!jvms()->has_method()) {

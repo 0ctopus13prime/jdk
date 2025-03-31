@@ -3996,7 +3996,69 @@ void StubGenerator::generate_initial_stubs() {
   generate_libm_stubs();
 
   StubRoutines::_fmod = generate_libmFmod(); // from stubGenerator_x86_64_fmod.cpp
+
+  // KDY
+  StubRoutines::_kdy_innerProduct = generate_kdy_inner_product();
+  // KDY
 }
+
+// KDY
+address StubGenerator::generate_kdy_inner_product() {
+  // It will be guaranteed that two float arrays having identical length which is a multiple of 8.
+  // Ex: float[] vec1, float[] vec2 where len(vec1) == len(vec2) and len(vec1) % 8 == 0
+
+  StubCodeMark mark(this, "StubRoutines", "kdyIP");
+  address start = __ pc();
+
+  const Register vec1        = c_rarg0;  // vec1
+  const Register vec2        = c_rarg1;  // vec2
+  const Register dimension   = c_rarg2;  // dimension
+  const auto ymm0 = xmm0;
+  const auto ymm1 = xmm1;
+  const auto ymm2 = xmm2;
+
+  Label L_loop, L_remainder, L_rem_loop, L_reduce;
+
+  __ enter(); // required for proper stackwalking of RuntimeStub frame
+
+  // Set up registers
+  __ vxorps(ymm0, ymm0, ymm0, Assembler::AVX_256bit);
+  __ shrl(dimension, 3);
+
+  // Start loop
+  __ bind(L_loop);
+  __ vmovups(ymm1, Address(vec1, 0), Assembler::AVX_256bit);
+  __ vmovups(ymm2, Address(vec2, 0), Assembler::AVX_256bit);
+  __ vfmadd231ps(ymm0, ymm1, ymm2, Assembler::AVX_256bit);
+
+  // Inc pointers
+  __ addq(vec1, 32);
+  __ addq(vec2, 32);
+  __ decq(dimension);
+  __ testl(dimension, 0);
+  __ jcc(Assembler::notEqual, L_loop);
+
+  // Reduce
+  __ vextractf128(xmm1, ymm0, 1);
+  __ addps(xmm0, xmm1);  // xmm0 have four values sumed up.
+
+  __ movaps(xmm1, xmm0);  // xmm0 = [v0, v1, v2, v3]
+  __ shufps(xmm1, xmm1, 0xF4);  // xmm1 = [DC, DC, v0, v1]
+  __ addps(xmm0, xmm1);  // xmm0 = [DC, DC, v0 + v2, v1 + v3]
+
+  __ movaps(xmm1, xmm0);  // duplicate xmm0 to xmm1
+  __ psllq(xmm1, 32);  // xmm1 = [DC, DC, DC, v0 + v2]
+  __ addps(xmm0, xmm1);  // xmm0 = [DC, DC, DC, v0 + v1 + v2 + v3]
+
+  __ shufps(xmm0, xmm0, 0xFF);  // xmm0 = [v0 + v1 + v2 + v3, ...]
+
+
+  __ leave();
+  __ ret(0);
+
+  return start;
+}
+// KDY
 
 void StubGenerator::generate_continuation_stubs() {
   // Continuation stubs:

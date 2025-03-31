@@ -170,6 +170,10 @@ address StubRoutines::_dlibm_reduce_pi04l = nullptr;
 address StubRoutines::_dlibm_tan_cot_huge = nullptr;
 address StubRoutines::_dtan = nullptr;
 
+// KDY
+address StubRoutines::_kdy_innerProduct = nullptr;
+// KDY
+
 address StubRoutines::_f2hf = nullptr;
 address StubRoutines::_hf2f = nullptr;
 

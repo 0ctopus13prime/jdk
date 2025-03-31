@@ -262,6 +262,10 @@ class StubRoutines: AllStatic {
   static address _cont_returnBarrier;
   static address _cont_returnBarrierExc;
 
+  // KDY
+  static address _kdy_innerProduct;
+  // KDY
+
   JFR_ONLY(static RuntimeStub* _jfr_write_checkpoint_stub;)
   JFR_ONLY(static address _jfr_write_checkpoint;)
   JFR_ONLY(static RuntimeStub* _jfr_return_lease_stub;)
@@ -443,6 +447,10 @@ class StubRoutines: AllStatic {
   static address dlibm_sin_cos_huge()  { return _dlibm_sin_cos_huge; }
   static address dlibm_tan_cot_huge()  { return _dlibm_tan_cot_huge; }
   static address dtan()                { return _dtan; }
+
+  // KDY
+  static address kdy_innerProduct()                { return _kdy_innerProduct; }
+  // KDY
 
   // These are versions of the java.lang.Float::floatToFloat16() and float16ToFloat()
   // methods which perform the same operations as the intrinsic version.
