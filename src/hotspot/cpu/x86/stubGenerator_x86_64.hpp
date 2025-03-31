@@ -516,6 +516,10 @@ class StubGenerator: public StubCodeGenerator {
   address generate_libmLog10();
   address generate_libmFmod();
 
+  // KDY
+  address generate_kdy_inner_product();
+  // KDY
+
   // Shared constants
   static address ZERO;
   static address NEG_ZERO;

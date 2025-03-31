@@ -195,6 +195,13 @@ class methodHandle;
   do_intrinsic(_dsignum,                  java_lang_Math,         signum_name,        double_double_signature,   F_S)   \
   do_intrinsic(_fsignum,                  java_lang_Math,         signum_name,        float_float_signature,     F_S)   \
                                                                                                                         \
+  /* KDY */                                                                                                             \
+  do_class(_k_java_lang_Kdy, "java/lang/Kdy")                                                                           \
+  do_name(_k_inner_product_name, "innerProduct")                                                                        \
+  do_signature(_k_fa_fa_signature, "([F[F)F")                                                                           \
+  do_intrinsic(_k_inner_product, _k_java_lang_Kdy, _k_inner_product_name, _k_fa_fa_signature, F_S)                      \
+  /* KDY */                                                                                                             \
+                                                                                                                        \
   /* StrictMath intrinsics, similar to what we have in Math. */                                                         \
   do_intrinsic(_min_strict,               java_lang_StrictMath,   min_name,           int2_int_signature,        F_S)   \
   do_intrinsic(_max_strict,               java_lang_StrictMath,   max_name,           int2_int_signature,        F_S)   \

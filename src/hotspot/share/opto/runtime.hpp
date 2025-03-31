@@ -268,6 +268,10 @@ private:
 
   static const TypeFunc* array_fill_Type();
 
+  // TMP
+  static const TypeFunc* kdy_innerProduct_Type();
+  // TMP
+
   static const TypeFunc* array_sort_Type();
   static const TypeFunc* array_partition_Type();
   static const TypeFunc* aescrypt_block_Type();
